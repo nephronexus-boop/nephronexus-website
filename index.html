@@ -447,6 +447,73 @@
       </a>
     </div>
 
+    <!-- ════════════════════════════════════════════════════════════════
+         NOTICE BOARD (announcements, admin can post/edit/delete)
+    ════════════════════════════════════════════════════════════════ -->
+    <div id="notice-board" class="reveal mt-8 w-full max-w-lg mx-auto rounded-xl px-5 py-3" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(4px);">
+      <div class="flex items-start gap-3">
+        <!-- Icon + label -->
+        <div class="flex items-center gap-2 shrink-0 pt-0.5">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 3h12M2 8h12M2 13h7" stroke="#4DD9D9" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span class="text-xs font-semibold tracking-wide" style="color:#4DD9D9;">NOTICES</span>
+        </div>
+
+        <!-- Notices list -->
+        <div id="notice-list" class="flex-1 min-w-0 flex flex-col gap-1.5 text-left"></div>
+      </div>
+
+      <p id="notice-empty" class="hidden text-xs text-white/40 pl-6 text-left">No notices at the moment. Check back soon.</p>
+      <p id="notice-sync-note" class="hidden text-xs mt-2 rounded-lg px-3 py-2" style="background:#FFF7E6;color:#8A6300;border:1px solid #F5D98A;"></p>
+
+      <!-- Admin controls -->
+      <div class="flex items-center justify-end gap-4 mt-2">
+        <button id="notice-add-btn" type="button" class="hidden text-xs font-medium hover:underline" style="color:#4DD9D9;">+ Add Notice</button>
+        <button id="notice-login-btn" type="button" class="text-xs text-white/40 hover:text-white/70 underline underline-offset-2">Admin login</button>
+        <button id="notice-logout-btn" type="button" class="hidden text-xs text-white/40 hover:text-white/70 underline underline-offset-2">Log out</button>
+      </div>
+    </div>
+
+    <!-- Notice add/edit modal -->
+    <div id="notice-form-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="notice-form-title" style="position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(11,37,69,0.55);padding:1.5rem;display:none;">
+      <div style="background:#fff;border-radius:1rem;max-width:26rem;width:100%;padding:1.75rem;">
+        <h3 id="notice-form-title" class="font-display font-bold text-navy text-lg mb-1">Post a Notice</h3>
+        <p class="text-sm text-gray-500 mb-5">This will be shown to every visitor at the top of the site.</p>
+        <form id="notice-form">
+          <div class="mb-4">
+            <label class="form-label" for="notice-title-input">Title <span class="text-red-500">*</span></label>
+            <input type="text" id="notice-title-input" class="form-input" placeholder="e.g. Holiday Closure" maxlength="80" required />
+          </div>
+          <div class="mb-4">
+            <label class="form-label" for="notice-text-input">Details</label>
+            <textarea id="notice-text-input" class="form-input" rows="3" placeholder="e.g. The centre will remain closed on 15th August for Independence Day." maxlength="300"></textarea>
+          </div>
+          <div class="mb-5">
+            <label class="form-label" for="notice-expiry-input">Show until (optional)</label>
+            <input type="date" id="notice-expiry-input" class="form-input" />
+          </div>
+          <p id="notice-form-error" class="text-red-500 text-xs mb-3 hidden"></p>
+          <div class="flex gap-3">
+            <button type="submit" id="notice-save-btn" class="btn-primary flex-1 justify-center text-sm">Post Notice</button>
+            <button type="button" id="notice-form-cancel" class="text-sm text-gray-400 hover:text-gray-600 px-3">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notice board admin login modal -->
+    <div id="notice-login-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="notice-login-title" style="position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(11,37,69,0.55);padding:1.5rem;display:none;">
+      <div style="background:#fff;border-radius:1rem;max-width:22rem;width:100%;padding:1.75rem;">
+        <h3 id="notice-login-title" class="font-display font-bold text-navy text-lg mb-1">Admin login</h3>
+        <p class="text-sm text-gray-500 mb-5">Sign in with the Google account authorized to manage notices.</p>
+        <p id="notice-login-error" class="text-red-500 text-xs mb-3 hidden"></p>
+        <button type="button" id="notice-google-btn" class="w-full flex items-center justify-center gap-3 text-sm font-medium rounded-lg border border-gray-200 py-2.5 hover:bg-gray-50 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.83.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.97v2.33A9 9 0 009 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 013.68 9c0-.59.1-1.17.27-1.7V4.97H.97A9 9 0 000 9c0 1.45.35 2.83.97 4.03l2.98-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.97 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+          Sign in with Google
+        </button>
+        <button type="button" id="notice-login-cancel" class="w-full text-center text-sm text-gray-400 hover:text-gray-600 mt-4">Cancel</button>
+      </div>
+    </div>
+
     <!-- Trust stats strip -->
     <div class="mt-14 grid grid-cols-3 gap-6 sm:gap-12 reveal w-full max-w-lg">
       <div class="flex flex-col items-center">
@@ -1780,6 +1847,273 @@
           .finally(function () {
             uploadBtn.disabled = false;
             uploadBtn.innerHTML = originalBtnText;
+          });
+      });
+    }
+  })();
+
+  // ════════════════════════════════════════════════════════════════════
+  // NOTICE BOARD
+  //
+  // Uses the SAME Firebase project/auth session as the Gallery and Reviews
+  // sections above (FIREBASE_CONFIG, ADMIN_EMAIL) — a Firestore collection
+  // called "notices" holds each announcement. Signing in once (here or in
+  // the Gallery section) authorizes posting/editing/deleting notices too,
+  // since it's the same Google account check.
+  //
+  // ONE-TIME SETUP: make sure your Firestore rules also allow public read +
+  // admin-only write on the "notices" collection (same pattern as the
+  // "gallery" collection — see GALLERY_RULES.txt and adapt the collection
+  // name).
+  // ════════════════════════════════════════════════════════════════════
+  (function () {
+    const listEl        = document.getElementById('notice-list');
+    if (!listEl) return;
+
+    const emptyMsg       = document.getElementById('notice-empty');
+    const syncNote        = document.getElementById('notice-sync-note');
+    const addBtn          = document.getElementById('notice-add-btn');
+    const loginBtn        = document.getElementById('notice-login-btn');
+    const logoutBtn       = document.getElementById('notice-logout-btn');
+    const loginModal      = document.getElementById('notice-login-modal');
+    const loginCancelBtn  = document.getElementById('notice-login-cancel');
+    const loginErrorEl    = document.getElementById('notice-login-error');
+    const googleBtn       = document.getElementById('notice-google-btn');
+    const formModal       = document.getElementById('notice-form-modal');
+    const form             = document.getElementById('notice-form');
+    const formCancelBtn    = document.getElementById('notice-form-cancel');
+    const formErrorEl      = document.getElementById('notice-form-error');
+    const saveBtn          = document.getElementById('notice-save-btn');
+    const titleInput       = document.getElementById('notice-title-input');
+    const textInput        = document.getElementById('notice-text-input');
+    const expiryInput      = document.getElementById('notice-expiry-input');
+
+    const NOTICE_READY = typeof firebase !== 'undefined'
+      && FIREBASE_CONFIG.apiKey
+      && !FIREBASE_CONFIG.apiKey.startsWith('YOUR_');
+
+    if (!NOTICE_READY) {
+      // Hide the whole board rather than show a broken/empty banner.
+      const section = document.getElementById('notice-board');
+      if (section) section.style.display = 'none';
+      return;
+    }
+
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    const db   = firebase.firestore();
+    const auth = firebase.auth();
+
+    let latestNotices = [];
+    let isAdmin = false;
+    let editingId = null;
+
+    function escapeHTML(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function formatDate(ts) {
+      if (!ts || !ts.toDate) return '';
+      return ts.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    }
+
+    function renderNotices() {
+      const now = new Date();
+      const visible = latestNotices.filter(function (n) {
+        if (!n.expiresAt) return true;
+        const exp = n.expiresAt.toDate ? n.expiresAt.toDate() : new Date(n.expiresAt);
+        return exp >= now;
+      });
+
+      if (!visible.length) {
+        listEl.innerHTML = '';
+        if (emptyMsg) emptyMsg.classList.remove('hidden');
+        return;
+      }
+      if (emptyMsg) emptyMsg.classList.add('hidden');
+
+      listEl.innerHTML = visible.map(function (n) {
+        const title = escapeHTML(n.title);
+        const text  = escapeHTML(n.text);
+        const date  = formatDate(n.createdAt);
+        return `
+          <div class="flex items-start gap-2 text-sm">
+            <span class="text-white/90 font-medium shrink-0">${title}${text ? ':' : ''}</span>
+            ${text ? `<span class="text-white/60 min-w-0">${text}</span>` : ''}
+            ${date ? `<span class="text-white/30 text-xs shrink-0 ml-auto hidden sm:inline">${date}</span>` : ''}
+            ${isAdmin ? `
+              <button type="button" class="notice-edit-btn text-white/40 hover:text-teal text-xs shrink-0" data-id="${n.id}" title="Edit">✎</button>
+              <button type="button" class="notice-delete-btn text-white/40 hover:text-red-400 text-xs shrink-0" data-id="${n.id}" title="Delete">✕</button>
+            ` : ''}
+          </div>`;
+      }).join('');
+
+      if (isAdmin) {
+        listEl.querySelectorAll('.notice-edit-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            openFormModal(this.dataset.id);
+          });
+        });
+        listEl.querySelectorAll('.notice-delete-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (!confirm('Delete this notice?')) return;
+            const id = this.dataset.id;
+            db.collection('notices').doc(id).delete().catch(function (err) {
+              console.error('Delete failed:', err);
+              alert('Could not delete notice: ' + err.message);
+            });
+          });
+        });
+      }
+    }
+
+    db.collection('notices').orderBy('createdAt', 'desc').limit(50).onSnapshot(function (snapshot) {
+      latestNotices = [];
+      snapshot.forEach(function (doc) {
+        latestNotices.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      renderNotices();
+    }, function (err) {
+      console.error('Notice board sync error:', err);
+      if (syncNote) {
+        syncNote.textContent = 'Notice board is temporarily unavailable — please try again shortly.';
+        syncNote.classList.remove('hidden');
+      }
+    });
+
+    // ── Admin login / logout (shares the auth session with the Gallery) ──
+    function openLoginModal() {
+      loginErrorEl.classList.add('hidden');
+      loginErrorEl.textContent = '';
+      loginModal.style.display = 'flex';
+      loginModal.classList.remove('hidden');
+    }
+    function closeLoginModal() {
+      loginModal.style.display = 'none';
+      loginModal.classList.add('hidden');
+    }
+    if (loginBtn) loginBtn.addEventListener('click', openLoginModal);
+    if (loginCancelBtn) loginCancelBtn.addEventListener('click', closeLoginModal);
+    if (loginModal) loginModal.addEventListener('click', function (e) {
+      if (e.target === loginModal) closeLoginModal();
+    });
+
+    if (googleBtn) {
+      googleBtn.addEventListener('click', function () {
+        loginErrorEl.classList.add('hidden');
+        googleBtn.disabled = true;
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+          .then(function (result) {
+            const signedInEmail = result.user && result.user.email;
+            if (signedInEmail !== ADMIN_EMAIL) {
+              return auth.signOut().then(function () {
+                loginErrorEl.textContent = 'That Google account is not authorized to manage notices.';
+                loginErrorEl.classList.remove('hidden');
+              });
+            }
+            closeLoginModal();
+          })
+          .catch(function (err) {
+            console.error('Google sign-in failed:', err);
+            if (err.code !== 'auth/popup-closed-by-user') {
+              loginErrorEl.textContent = 'Sign-in failed: ' + err.message;
+              loginErrorEl.classList.remove('hidden');
+            }
+          })
+          .finally(function () {
+            googleBtn.disabled = false;
+          });
+      });
+    }
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function () {
+        auth.signOut();
+      });
+    }
+
+    auth.onAuthStateChanged(function (user) {
+      isAdmin = !!user && user.email === ADMIN_EMAIL;
+      if (addBtn) addBtn.classList.toggle('hidden', !isAdmin);
+      if (loginBtn) loginBtn.classList.toggle('hidden', isAdmin);
+      if (logoutBtn) logoutBtn.classList.toggle('hidden', !isAdmin);
+      renderNotices();
+    });
+
+    // ── Add / edit notice form ─────────────────────────────────────────
+    function openFormModal(id) {
+      formErrorEl.classList.add('hidden');
+      form.reset();
+      editingId = id || null;
+      if (id) {
+        const n = latestNotices.find(function (x) { return x.id === id; });
+        if (n) {
+          document.getElementById('notice-form-title').textContent = 'Edit Notice';
+          titleInput.value = n.title || '';
+          textInput.value = n.text || '';
+          if (n.expiresAt) {
+            const d = n.expiresAt.toDate ? n.expiresAt.toDate() : new Date(n.expiresAt);
+            expiryInput.value = d.toISOString().slice(0, 10);
+          }
+          saveBtn.textContent = 'Save Changes';
+        }
+      } else {
+        document.getElementById('notice-form-title').textContent = 'Post a Notice';
+        saveBtn.textContent = 'Post Notice';
+      }
+      formModal.style.display = 'flex';
+      formModal.classList.remove('hidden');
+    }
+    function closeFormModal() {
+      formModal.style.display = 'none';
+      formModal.classList.add('hidden');
+      editingId = null;
+    }
+    if (addBtn) addBtn.addEventListener('click', function () { openFormModal(null); });
+    if (formCancelBtn) formCancelBtn.addEventListener('click', closeFormModal);
+    if (formModal) formModal.addEventListener('click', function (e) {
+      if (e.target === formModal) closeFormModal();
+    });
+
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!auth.currentUser) { alert('Please log in first.'); return; }
+
+        const title = titleInput.value.trim();
+        if (!title) return;
+        const text = textInput.value.trim();
+        const expiryVal = expiryInput.value;
+        const expiresAt = expiryVal ? new Date(expiryVal + 'T23:59:59') : null;
+
+        formErrorEl.classList.add('hidden');
+        saveBtn.disabled = true;
+
+        const payload = {
+          title: title,
+          text: text,
+          expiresAt: expiresAt
+        };
+
+        const promise = editingId
+          ? db.collection('notices').doc(editingId).update(payload)
+          : db.collection('notices').add(Object.assign({}, payload, {
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }));
+
+        promise
+          .then(function () {
+            closeFormModal();
+          })
+          .catch(function (err) {
+            console.error('Save notice failed:', err);
+            formErrorEl.textContent = 'Could not save notice: ' + err.message;
+            formErrorEl.classList.remove('hidden');
+          })
+          .finally(function () {
+            saveBtn.disabled = false;
           });
       });
     }
